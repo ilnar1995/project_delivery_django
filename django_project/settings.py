@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -194,21 +195,7 @@ INTERNAL_IPS = [  # для debug toolbar
     # ...
 ]
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.yandex.ru'
-# EMAIL_HOST_USER = 'sashamail5@yandex.ru'
-# EMAIL_HOST_PASSWORD = 'ghtj,hfpjdfntkm1'
-# EMAIL_PORT = 587
 
-# REDIS_HOST = '0.0.0.0'
-# REDIS_PORT = '6379'
-# CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-# CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility': 3600}
-# CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")  # os.environ.get('CELERY_BROKER_URL')#  #'redis://redis:6379'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility': 3600}
@@ -216,5 +203,15 @@ CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")  # os.getenv("CE
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "delivery.tasks.sample_task",
+        "schedule": crontab(minute="*/3"),
+    },
+}
+
 
 # AUTH_USER_MODEL = 'accounts.User'

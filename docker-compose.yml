@@ -20,7 +20,7 @@ services:
     command:  bash -c "python /usr/src/django_project/manage.py runserver 0.0.0.0:8000"
     entrypoint: /usr/src/django_project/docker/entrypoint.sh
     volumes:
-      - .:/usr/src/django_project
+      - .:/usr/src/django_project/
     env_file:
       - .env.dev
     ports:
@@ -38,7 +38,20 @@ services:
     entrypoint: /usr/src/django_project/docker/entrypoint-celery.sh
     command: celery -A django_project worker -l info
     volumes:
-      - .:/code
+      - .:/usr/src/django_project/
+    depends_on:
+      - db_project
+      - redis
+    env_file:
+      - .env.dev
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    entrypoint: /usr/src/django_project/docker/entrypoint-celery.sh
+    command: celery -A django_project beat -l info
+    volumes:
+      - .:/usr/src/django_project/
     depends_on:
       - db_project
       - redis

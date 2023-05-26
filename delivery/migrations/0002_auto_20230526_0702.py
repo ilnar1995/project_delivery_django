@@ -33,15 +33,15 @@ def add_default(apps, schema_editor):
     print('Подождите. Идет генерация 20 случайных машин')
     for i in range(20):
         random_nomber = str(random.randint(1000, 9999)) + random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-        Cars.objects.update_or_create(car_number=random_nomber, location=Location.objects.get(id=random.randint(1, 11000)),
+        Cars.objects.update_or_create(car_number=random_nomber, location=Location.objects.order_by("?").first(),
                             carrying_capacity=random.randint(1, 1000))
     print('Подождите. Идет генерация 10 случайных грузов')
     for i in range(10):
         letters = string.ascii_lowercase
         random_length = random.randint(20, 100)
         random_description="".join(random.choice(letters) for i in range(random_length))
-        Cargo.objects.create(location_pick_up=Location.objects.get(id=random.randint(1, 11000)),
-                             location_delivery=Location.objects.get(id=random.randint(1, 11000)),
+        Cargo.objects.create(location_pick_up=Location.objects.order_by("?").first(),
+                             location_delivery=Location.objects.order_by("?").first(),
                              weight=random.randint(1, 1000), description=random_description)
 
 
