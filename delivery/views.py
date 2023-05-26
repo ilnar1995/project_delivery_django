@@ -21,8 +21,18 @@ class CargoModelListUpdateViewSet(ModelViewSet):
 
 
     def get_queryset(self):
-        instance = Cargo.objects.all()
-        return instance
+        if max_weight := self.request.query_params.get("max_weight"):
+            self.queryset = self.queryset.filter(weight__lte=max_weight)
+        return self.queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name="max_weight", description="Filter by weight", required=False, type=int),
+            OpenApiParameter(name="max_car_distance", description="Filter by weight", required=False, type=int),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     # def get_serializer(self, *args, **kwargs):
     #     kwargs['partial'] = True
@@ -32,13 +42,7 @@ class CargoModelListUpdateViewSet(ModelViewSet):
         if self.action in ('list',):
             return CargoListSerializer
         return CargoPatchSerializer
-    # def get_serializer_class(self):
-    #     print(self.request.method)
-    #     if hasattr(self.request, 'method'):
-    #         if self.request.method == 'GET':
-    #             return CargoPatchSerializer
-    #     else:
-    #         return CargoSerializer
+
 
 class CargoModelRetrieveCreateViewSet(ModelViewSet):
     queryset = Cargo.objects.all()
@@ -52,11 +56,6 @@ class CargoModelRetrieveCreateViewSet(ModelViewSet):
     # def get_serializer(self, *args, **kwargs):
     #     kwargs['partial'] = True
     #     return super(CargoModelViewSet, self).get_serializer(*args, **kwargs)
-
-    # def get_serializer_class(self):
-    #     if self.action in ('retrieve',):
-    #         return CargoCreateRetrieveSerializer
-    #     return CargoCreateRetrieveSerializer
 
 
 class CarModelViewSet(ModelViewSet):

@@ -2,7 +2,8 @@
 
 Запускается через команду
 на линукс: sudo docker compose up
-на windows: docker compose up
+на windows: docker compose up (!!!! перед запуском на windows необходимо в папке docker у файлов entrypoint.sh и
+entrypoint-celery.sh поменять кодировки окончания строк с CRLF на LF)
 
 страница сваггера:
 http://localhost:8000/swagger
