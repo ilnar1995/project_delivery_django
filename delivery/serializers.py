@@ -14,16 +14,6 @@ class CargoBaseSerializer(serializers.ModelSerializer):
         model = models.Cargo
         fields = ['location_pick_up', 'location_delivery']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        try:
-            if self.context['request'].method in ['POST', 'PUT']:
-                self.fields['location_pick_up'] = serializers.PrimaryKeyRelatedField(queryset=models.Location.objects.all())
-                self.fields['location_delivery'] = serializers.PrimaryKeyRelatedField(queryset=models.Location.objects.all())
-        except KeyError:
-            pass
-
 class CargoCreateRetrieveSerializer(CargoBaseSerializer):
     distances_of_cars = serializers.SerializerMethodField()
 
@@ -83,16 +73,6 @@ class CarSerializer(serializers.ModelSerializer):
         model = models.Car
         fields = '__all__'
 
-
-
-    def __init__(self, *args, **kwargs):
-        super(CarSerializer, self).__init__(*args, **kwargs)
-
-        try:
-            if self.context['request'].method in ['POST', 'PUT']:
-                self.fields['location'] = serializers.PrimaryKeyRelatedField(queryset=models.Location.objects.all())
-        except KeyError:
-            pass
 
 class LocationSerializer(serializers.ModelSerializer):
 
